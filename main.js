@@ -19,6 +19,8 @@ var Slideshow = Ractive.extend({
 			current: imageNum,
 			total: images.length
 		});
+
+		reloadWebPJS();
 	},
 
 	s3select: function(dateprefix) {
@@ -49,10 +51,34 @@ var Slideshow = Ractive.extend({
 	// initialisation code
 	oninit: function ( options ) {
 
+		// check if browser supports WebP
+        var WebP = new Image();
+        WebP.onload = WebP.onerror = function () {
+            if (WebP.height != 2) {
+				reloadWebPJS();
+            }
+        };
+        WebP.src =
+            'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+
 		// start with the first image
 		this.goto( 0 );
 	}
 });
+
+function reloadWebPJS() {
+	var sc = document.createElement('script');
+	sc.type = 'text/javascript';
+	sc.id = 'webpjs';
+	sc.async = true;
+	var s = document.getElementsByTagName('script')[0];
+	var p = document.getElementById('webpjs');
+	sc.src = './webpjs-0.0.2.min.js';
+	if (p == true) {
+		p.parentNode.removeChild(p)
+	}
+	s.parentNode.insertBefore(sc, s);
+}
 
 function hash() {
 	var h = window.location.hash.substr(1);
